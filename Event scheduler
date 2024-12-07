@@ -1,0 +1,164 @@
+import java.awt.; import java.awt.event.; 
+import java.util.ArrayList; 
+ 
+class Event { String 
+name; 
+ String date; 
+ String time; 
+ String venue; 
+ 
+ Event(String name, String date, String time, String venue) { 
+this.name = name; this.date = date; this.time = time; 
+this.venue = venue; 
+ } 
+ 
+ @Override public String toString() { return name + " on " + date + 
+" at " + time + " (Venue: " + venue + ")"; 
+ } 
+} 
+ 
+public class EventSchedulerAWT extends Frame implements ActionListener { 
+ ArrayList<Event> events = new ArrayList<>();
+Label timeLabel = new Label("Event Time (hh:mm):"); 
+timeLabel.setBounds(50, 150, 150, 30); 
+add(timeLabel); 
+ 
+timeField = new TextField(); 
+timeField.setBounds(200, 150, 200, 30); 
+add(timeField); 
+ 
+ // Venue Label and TextField 
+ Label venueLabel = new Label("Venue:"); 
+venueLabel.setBounds(50, 200, 150, 30); 
+add(venueLabel); 
+ 
+ venueField = new TextField(); 
+venueField.setBounds(200, 200, 200, 30); 
+add(venueField); 
+ 
+ // Buttons 
+ Button addButton = new Button("Book Event"); 
+addButton.setBounds(50, 250, 100, 30); 
+addButton.addActionListener(this); 
+add(addButton); 
+ 
+ Button viewButton = new Button("View Events"); 
+viewButton.setBounds(200, 250, 100, 30);
+TextField nameField, dateField, timeField, venueField, deleteField; 
+ TextArea displayArea; 
+ 
+ public EventSchedulerAWT() { 
+ // Frame properties setTitle("Enhanced Event 
+Scheduling System"); setSize(800, 600); 
+setLayout(null); setVisible(true); 
+ 
+ // Event Name Label and TextField 
+ Label nameLabel = new Label("Event Name:"); 
+nameLabel.setBounds(50, 50, 150, 30); 
+add(nameLabel); 
+ 
+ nameField = new TextField(); 
+nameField.setBounds(200, 50, 200, 30); add(nameField); 
+ 
+ // Event Date Label and TextField 
+ Label dateLabel = new Label("Event Date (dd/mm/yyyy):"); 
+dateLabel.setBounds(50, 100, 150, 30); add(dateLabel); 
+ 
+ dateField = new TextField(); 
+dateField.setBounds(200, 100, 200, 30); add(dateField); 
+ 
+ // Event Time Label and TextField
+viewButton.addActionListener(this); 
+add(viewButton); 
+ 
+Button deleteButton = new Button("Delete Event"); 
+deleteButton.setBounds(350, 250, 100, 30); deleteButton.addActionListener(this); 
+add(deleteButton); 
+ 
+ // Delete Field deleteField = new 
+TextField(); deleteField.setBounds(350, 
+300, 200, 30); deleteField.setVisible(false); 
+add(deleteField); 
+ 
+ // Display Area displayArea = new 
+TextArea(); displayArea.setBounds(50, 
+350, 700, 200); displayArea.setEditable(false); 
+add(displayArea); 
+ 
+ // Close the window 
+addWindowListener(new WindowAdapter() { public 
+void windowClosing(WindowEvent e) { 
+ dispose(); 
+ } 
+ }); 
+ }
+ @Override public void 
+actionPerformed(ActionEvent e) { String 
+action = e.getActionCommand(); 
+ 
+switch (action) { 
+case "Book Event": 
+ bookEvent(); 
+break; 
+ 
+ case "View Events": 
+displayEvents(); break; 
+ 
+ case "Delete Event": 
+ deleteField.setVisible(true); displayArea.setText("Enter 
+event index to delete:"); deleteField.addActionListener(ev -> 
+deleteEvent()); break; 
+ } 
+ } 
+ 
+ private void bookEvent() { 
+ // Get input values 
+ String name = nameField.getText(); 
+ String date = dateField.getText();
+String time = timeField.getText(); 
+ String venue = venueField.getText(); 
+ 
+ // Validate inputs if (name.isEmpty() || date.isEmpty() || time.isEmpty() 
+|| venue.isEmpty()) { displayArea.setText("Error: All fields are required!"); 
+ } else { 
+ // Add event events.add(new Event(name, date, 
+time, venue)); displayArea.setText("Event booked 
+successfully!"); clearFields(); 
+ } 
+ } 
+ 
+ private void displayEvents() { // Display all 
+events if (events.isEmpty()) { displayArea.setText("No 
+events scheduled."); 
+ } else { 
+ StringBuilder eventList = new StringBuilder("Scheduled Events:\n"); 
+for (int i = 0; i < events.size(); i++) { eventList.append(i + 1).append(". 
+").append(events.get(i)).append("\n"); 
+ } 
+ displayArea.setText(eventList.toString()); 
+ } 
+ }
+private void deleteEvent() { 
+try { int index = 
+Integer.parseInt(deleteField.getText()) - 1; if (index 
+>= 0 && index < events.size()) { 
+events.remove(index); displayArea.setText("Event 
+deleted successfully!"); 
+deleteField.setVisible(false); displayEvents(); 
+ } else { 
+displayArea.setText("Invalid index!"); 
+ } 
+ } catch (NumberFormatException ex) { 
+displayArea.setText("Enter a valid number!"); 
+ } 
+ } 
+ 
+ private void clearFields() { 
+nameField.setText(""); 
+dateField.setText(""); timeField.setText(""); venueField.setText(""); 
+ } 
+ 
+ public static void main(String[] args) { 
+new EventSchedulerAWT(); 
+ } 
+}
